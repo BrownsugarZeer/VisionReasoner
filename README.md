@@ -13,11 +13,12 @@ Overview of Vision-Manus:
 Vision-Manus demonstrates following features:
 1. With a task router and a core cognition model, Vision-Manus can deal with dozens of vision tasks. 
 2. Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
-3. Currently, we have support dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1), including Object Detection, Semantic Segementation, Instance Segmentation, Image Captioning, Object Counting, etc. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
+3. Currently, we have support dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [supported tasks](supported_tasks.md) for details. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
 
 
 ## News
 
+<!-- [April 22th] We have released the training codes of Vision Manus. Please refer to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for details.  -->
 [April 19th, 2025] 🔥 Vision-Manus is coming! Vision-Manus is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).
 
 
@@ -114,12 +115,14 @@ And the results will be presented in **inference_scripts** folder.
 ### We also support naive visual QA / captioning task:
 ```bash
 python inference_scripts/infer.py --image_path "assets/company_name.png" --text "What is name of the company?"
-```
+``` 
+
+> "What is name of the company?"
 <div align=center>
 <img width="20%" src="assets/company_name.png"/>
 </div>
 
-you will get the final answer in command line, like:
+You will get the final answer in command line, like:
 
 > "The answer is:  ITC"
 
@@ -149,7 +152,7 @@ python inference_scripts/infer.py --image_path "your_image_path" --text "your qu
 
 @misc{liu2025visionmanus,
   title        = {Vision-Manus: Solving Dozens of Vision Tasks with One Assistant},
-  author       = {Liu, Yuqi and QU, Tianyuan},
+  author       = {Liu, Yuqi and Qu, Tianyuan and Liu, Shu},
   howpublished = {\url{https://github.com/dvlab-research/Vision-Manus}},
   year         = {2025}
 }

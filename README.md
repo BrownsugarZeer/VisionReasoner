@@ -1,4 +1,4 @@
-# Vision-Manus: Solving Hundreds of Vision Tasks with One Assistant
+# Vision-Manus: Solving Dozens of Vision Tasks with One Assistant
 
 <!-- Paper: [📖 Vision-Manus](https://arxiv.org/abs/2503.06520)   
 HuggingFace Daily: [🤗 Seg-Zero](https://huggingface.co/papers/2503.06520)   -->
@@ -11,9 +11,9 @@ Overview of Vision-Manus:
 </div>
 
 Vision-Manus demonstrates following features:
-1. With a task router and a core cognition model, Vision-Manus can deal with hundreds of vision tasks. 
-2. Vision-Manus includes a task router that convert hundreds of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
-3. Currently, we support four abstract tasks: 2D object detection, 2D object segmentation, object counting, VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
+1. With a task router and a core cognition model, Vision-Manus can deal with dozens of vision tasks. 
+2. Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
+3. Currently, we have support dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1), including Object Detection, Semantic Segementation, Instance Segmentation, Image Captioning, Face Detection, Object Counting, etc. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
 
 
 ## News
@@ -37,7 +37,7 @@ Vision-Manus demonstrates following features:
 <img width="98%" src="assets/pipeline.png"/>
 </div>
 
-Vision-Manus includes a task router that convert hundreds of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
+Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
 
 
 ## Examples
@@ -54,10 +54,8 @@ git clone https://github.com/dvlab-research/Vision-Manus.git
 cd Vision-Manus
 conda create -n vision_manus python=3.12
 conda activate vision_manus
-pip3 install torch torchvision torchaudio
-pip install -r requirements
-pip install sam2
-pip install matplotlib
+pip3 install torch torchvision
+pip install -r requirements.txt
 ```
 
 
@@ -65,20 +63,59 @@ pip install matplotlib
 ```bash
 python inference_scripts/infer_vision_manus.py
 ```
-The default question is 
-> "the unusal object in the image."
+### The default task is a counting task.  
+> "How many airplanes are there in this image?"
 
 You will get the thinking process in command line, like:
 
-> "The image shows a bicycle with wheels that have been replaced with large, round objects resembling watermelon slices. The unusual aspect of the image is the substitution of the bicycle wheels with these watermelon-like objects, which is not a typical feature of a bicycle. The rest of the bicycle appears to be a standard design, but the wheels are the focal point of the image."
+> "The image shows a formation of airplanes flying in the sky. The planes are arranged in a specific pattern, and there are visible smoke trails behind them. The task is to count the number of airplanes in the image and identify their bounding boxes. The planes are evenly spaced, and the formation appears to be symmetrical. The bounding boxes will be around the planes themselves, not the smoke trails."
 
-And the mask will be presented in **inference_scripts** folder. 
+And you will get the final answer in command line, like:
+
+> "Total number of interested objects is:  10"
+
+
+### You can also try a detection / segmentation task by:  
+```bash
+python inference_scripts/infer.py --image_path "assets/donuts.png" --text "please segment the donuts"
+```
+
+You will get the thinking process in command line, like:
+
+> "The task is to segment the donuts in the image. The goal is to identify the individual donuts and their bounding boxes. The donuts are of various colors and toppings, and they are arranged on a wooden surface. The bounding boxes will help in identifying the donuts and their positions relative to each other. The donuts are clearly separated, and the bounding boxes can be drawn around each donut based on their visible edges and shapes."
+
+And the results will be presented in **inference_scripts** folder. 
 
 <div align=center>
-<img width="98%" src="assets/test_output.png"/>
+<img width="98%" src="assets/donuts_output.png"/>
 </div>
 
-You can also provide your own image_path and text by:
+### Or some tasks that need reasoning: 
+
+```bash
+python inference_scripts/infer.py --image_path "assets/stand_higher.png" --text "find what can make the woman stand higher?"
+```
+
+You will get the thinking process in command line, like:
+
+> " The woman is standing on a ladder, which is used to make her stand higher. The ladder is positioned against the side of the house, allowing her to reach the upper part of the wall. The ladder is the object that can make the woman stand higher, as it elevates her position relative to the ground."
+
+And the results will be presented in **inference_scripts** folder. 
+
+<div align=center>
+<img width="98%" src="assets/stand_higher_output.png"/>
+</div>
+
+
+### We also support naive visual QA / captioning task:
+```bash
+python inference_scripts/infer.py --image_path "assets/company_name.png" --text "What is name of the company?"
+```
+you will get the final answer in command line, like:
+
+> "The answer is:  ITC"
+
+### You can also provide your own image_path and text by:
 ```bash
 python inference_scripts/infer.py --image_path "your_image_path" --text "your question text"
 ```

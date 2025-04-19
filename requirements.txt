@@ -17,3 +17,5 @@ tensordict
 transformers
 vllm
 wandb
+sam2
+matplotlib

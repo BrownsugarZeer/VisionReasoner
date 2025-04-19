@@ -13,17 +13,16 @@ Overview of Vision-Manus:
 Vision-Manus demonstrates following features:
 1. With a task router and a core cognition model, Vision-Manus can deal with dozens of vision tasks. 
 2. Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
-3. Currently, we have support dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1), including Object Detection, Semantic Segementation, Instance Segmentation, Image Captioning, Face Detection, Object Counting, etc. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
+3. Currently, we have support dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1), including Object Detection, Semantic Segementation, Instance Segmentation, Image Captioning, Object Counting, etc. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
 
 
 ## News
 
-[April 19th, 2025] 🔥 Vision-Manus is coming! We have released the inference code.
+[April 19th, 2025] 🔥 Vision-Manus is coming! Vision-Manus is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).
 
 
 ## Contents
 - [Model](#model)
-- [Examples](#examples)
 - [Installation](#installation)
 - [Inference](#inference)
 - [Training](#training)
@@ -40,11 +39,11 @@ Vision-Manus demonstrates following features:
 Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
 
 
-## Examples
+<!-- ## Examples
 
 <div align=center>
 <img width="98%" src="assets/examples.png"/>
-</div>
+</div> -->
 
 
 ## Installation
@@ -67,7 +66,7 @@ python inference_scripts/infer_vision_manus.py
 > "How many airplanes are there in this image?"
 
 <div align=center>
-<img width="60%" src="assets/airplanes.png"/>
+<img width="30%" src="assets/airplanes.png"/>
 </div>
 
 
@@ -117,7 +116,7 @@ And the results will be presented in **inference_scripts** folder.
 python inference_scripts/infer.py --image_path "assets/company_name.png" --text "What is name of the company?"
 ```
 <div align=center>
-<img width="50%" src="assets/company_name.png"/>
+<img width="20%" src="assets/company_name.png"/>
 </div>
 
 you will get the final answer in command line, like:
@@ -148,6 +147,12 @@ python inference_scripts/infer.py --image_path "your_image_path" --text "your qu
   year         = {2025}
 }
 
+@misc{liu2025visionmanus,
+  title        = {Vision-Manus: Solving Dozens of Vision Tasks with One Assistant},
+  author       = {Liu, Yuqi and QU, Tianyuan},
+  howpublished = {\url{https://github.com/dvlab-research/Vision-Manus}},
+  year         = {2025}
+}
 ```
 
 ## Acknowledgement

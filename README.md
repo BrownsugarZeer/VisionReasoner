@@ -66,6 +66,11 @@ python inference_scripts/infer_vision_manus.py
 ### The default task is a counting task.  
 > "How many airplanes are there in this image?"
 
+<div align=center>
+<img width="60%" src="assets/airplanes.png"/>
+</div>
+
+
 You will get the thinking process in command line, like:
 
 > "The image shows a formation of airplanes flying in the sky. The planes are arranged in a specific pattern, and there are visible smoke trails behind them. The task is to count the number of airplanes in the image and identify their bounding boxes. The planes are evenly spaced, and the formation appears to be symmetrical. The bounding boxes will be around the planes themselves, not the smoke trails."
@@ -111,6 +116,10 @@ And the results will be presented in **inference_scripts** folder.
 ```bash
 python inference_scripts/infer.py --image_path "assets/company_name.png" --text "What is name of the company?"
 ```
+<div align=center>
+<img width="50%" src="assets/company_name.png"/>
+</div>
+
 you will get the final answer in command line, like:
 
 > "The answer is:  ITC"

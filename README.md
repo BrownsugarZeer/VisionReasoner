@@ -1,4 +1,8 @@
-# Vision-Manus: Solving Dozens of Vision Tasks with One Assistant
+# Vision-Manus: Solving Dozens of Vision Tasks with One Assistant  
+
+> Current VLMs are primarily used for visual captioning or visual QA tasks. In this project, we take a step further by demonstrating the potential of a single VLM to solve dozens of diverse vision tasks. We hope this work will advance the frontier of VLM research and expand the boundaries of what these models can achieve.  
+
+> "A new era of VLM is coming. This is just the beginning..."    
 
 <!-- Paper: [📖 Vision-Manus](https://arxiv.org/abs/2503.06520)   
 HuggingFace Daily: [🤗 Seg-Zero](https://huggingface.co/papers/2503.06520)   -->
@@ -11,21 +15,23 @@ Overview of Vision-Manus:
 </div>
 
 Vision-Manus demonstrates following features:
-1. With a task router and a core cognition model, Vision-Manus can deal with dozens of vision tasks. 
-2. Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
-3. Currently, we have support dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [supported tasks](supported_tasks.md) for details. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.
+1. **Vision-Manus** has a task router module and a core cognitive module, it can deal with dozens of vision tasks within one model. 
+2. The task router module can convert dozens of vision tasks into limited abstract tasks.  The a core cognitive module can deal with abstract tasks and output final results.  
+3. We have supported dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1), although it may not be the best performance. Please refer to [supported tasks](supported_tasks.md) for details. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.  
+4. We select several representative tasks and propose the composite evaluation benchmark, **General-Visual-Bench**, to evaluate models general visual ability. This benchmark includes detection tasks (e.g., [COCO](https://cocodataset.org/#home), [RefCOCOg](https://github.com/lichengunc/refer)), segmentation tasks (e.g., [ReasonSeg](https://github.com/dvlab-research/LISA)), counting tasks (e.g., [CountBench](https://teaching-clip-to-count.github.io/)) and VQA tasks (e.g. [DocVQA](https://www.docvqa.org/)).
 
 
 ## News
 
 <!-- [April 22th] We have released the training codes of Vision Manus. Please refer to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for details.  -->
-[April 19th, 2025] 🔥 Vision-Manus is coming! Vision-Manus is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).
+[April 19th, 2025] 🔥 Vision-Manus is coming! Vision-Manus is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).  
 
 
 ## Contents
 - [Model](#model)
 - [Installation](#installation)
 - [Inference](#inference)
+- [Evaluation](#evaluation)
 - [Training](#training)
 - [Citation](#citation)
 - [Acknowledgement](#acknowledgement)
@@ -37,7 +43,7 @@ Vision-Manus demonstrates following features:
 <img width="98%" src="assets/pipeline.png"/>
 </div>
 
-Vision-Manus includes a task router that convert dozens of vision tasks into several abstract tasks, followed by a core cognition model that deal with abstract tasks. 
+Vision-Manus includes a task router module that convert dozens of vision tasks into several abstract tasks, followed by a core cognition module that deal with abstract tasks and output final results.  
 
 
 <!-- ## Examples
@@ -131,13 +137,23 @@ You will get the final answer in command line, like:
 python inference_scripts/infer.py --image_path "your_image_path" --text "your question text"
 ```
 
+## Evaluation
+
+Please refer to evaluation_scripts folders for details. 
+
+For example, use this script to evaluate ReasonSeg dataset.
+
+```bash 
+bash evaluation_scripts/eval_reasonseg.sh
+``` 
+
 
 ## Training
 
-[TO BE UPDATED] For the core cognitive model, we recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for training details. 
+[TO BE UPDATED] For the core cognitive module, we recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for training details. 
 
 > [!NOTE]
-> Currently, the training environment is different from Vision Manus.     
+> Currently, the training environment is different from Vision Manus. And the training codes are to be updated.      
 
 
 ## Citation

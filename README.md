@@ -56,10 +56,10 @@ Vision-Manus includes a task router module that convert dozens of vision tasks i
 ## Installation
 
 ```bash
-git clone https://github.com/dvlab-research/Vision-Manus.git
-cd Vision-Manus
-conda create -n vision_manus python=3.12
-conda activate vision_manus
+git clone https://github.com/dvlab-research/VisionReasoner.git
+cd VisionReasoner
+conda create -n vision_reasoner python=3.12
+conda activate vision_reasoner
 pip3 install torch torchvision
 pip install -r requirements.txt
 ```
@@ -67,7 +67,7 @@ pip install -r requirements.txt
 
 ## Inference
 ```bash
-python inference_scripts/infer_vision_manus.py
+python vision_resoner/infererence.py
 ```
 ### The default task is a counting task.  
 > "How many airplanes are there in this image?"
@@ -88,7 +88,7 @@ And you will get the final answer in command line, like:
 
 ### You can also try a detection / segmentation task by:  
 ```bash
-python inference_scripts/infer.py --image_path "assets/donuts.png" --text "please segment the donuts"
+python vision_resoner/infererence.py --image_path "assets/donuts.png" --query "please segment the donuts"
 ```
 
 You will get the thinking process in command line, like:
@@ -104,7 +104,7 @@ And the results will be presented in **inference_scripts** folder.
 ### Or some tasks that need reasoning: 
 
 ```bash
-python inference_scripts/infer.py --image_path "assets/stand_higher.png" --text "find what can make the woman stand higher?"
+python vision_resoner/infererence.py --image_path "assets/stand_higher.png" --query "find what can make the woman stand higher?"
 ```
 
 You will get the thinking process in command line, like:
@@ -120,7 +120,7 @@ And the results will be presented in **inference_scripts** folder.
 
 ### We also support naive visual QA / captioning task:
 ```bash
-python inference_scripts/infer.py --image_path "assets/company_name.png" --text "What is name of the company?"
+python vision_resoner/infererence.py --image_path "assets/company_name.png" --query "What is name of the company?"
 ``` 
 
 > "What is name of the company?"
@@ -134,17 +134,19 @@ You will get the final answer in command line, like:
 
 ### You can also provide your own image_path and text by:
 ```bash
-python inference_scripts/infer.py --image_path "your_image_path" --text "your question text"
+python vision_resoner/infererence.py --image_path "your_image_path" --query "your question text"
 ```
 
 ## Evaluation
 
-Please refer to evaluation_scripts folders for details. 
+Please refer to evaluation folders for details. 
 
 For example, use this script to evaluate ReasonSeg dataset.
 
 ```bash 
-bash evaluation_scripts/eval_reasonseg.sh
+bash evaluation/eval_segmentation.sh
+bash evaluation/eval_coco.sh
+bash evaluation/eval_count.sh
 ``` 
 
 

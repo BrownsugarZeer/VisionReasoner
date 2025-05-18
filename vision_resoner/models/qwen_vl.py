@@ -1,4 +1,3 @@
-# Vision-Manus/evaluation_scripts/models/qwen_vl_model.py
 import torch
 import numpy as np
 import re

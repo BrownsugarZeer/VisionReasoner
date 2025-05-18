@@ -1,30 +1,27 @@
-# Vision-Manus: Solving Dozens of Vision Tasks with One Assistant  
+# VisionReasoner: Unified Visual Perception and Reasoning via Reinforcement Learning
 
-> Current VLMs are primarily used for visual captioning or visual QA tasks. In this project, we take a step further by demonstrating the potential of a single VLM to solve dozens of diverse vision tasks. We hope this work will advance the frontier of VLM research and expand the boundaries of what these models can achieve.  
+> Current VLMs are primarily used for visual captioning or visual QA tasks. In this project, we take a step further by demonstrating the potential of a single VLM to solve diverse vision tasks. We hope this work will advance the frontier of VLM research and expand the boundaries of what these models can achieve.  
 
-> "A new era of VLM is coming. This is just the beginning..."    
-
-<!-- Paper: [📖 Vision-Manus](https://arxiv.org/abs/2503.06520)   
+<!-- Paper: [📖 VisionReasoner](https://arxiv.org/abs/2503.06520)   
 HuggingFace Daily: [🤗 Seg-Zero](https://huggingface.co/papers/2503.06520)   -->
-Model: [🤗 Vision-Manus-7B](https://huggingface.co/Ricky06662/Seg-Zero-7B) 
+Model: [🤗 VisionReasoner-7B](https://huggingface.co/Ricky06662/VisionReasoner-7B) 
 
-Overview of Vision-Manus:
+Overview of VisionReasoner:
 
 <div align=center>
 <img width="98%" src="assets/overview.png"/>
 </div>
 
-Vision-Manus demonstrates following features:
-1. **Vision-Manus** has a task router module and a core cognitive module, it can deal with dozens of vision tasks within one model. 
-2. The task router module can convert dozens of vision tasks into limited abstract tasks.  The a core cognitive module can deal with abstract tasks and output final results.  
-3. We have supported dozens of visual tasks in the [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1), although it may not be the best performance. Please refer to [supported tasks](supported_tasks.md) for details. These tasks are categoried as four abstract tasks: detection, segmentation, counting and VQA. More supported tasks and more abstract tasks are coming, such as 3D or medical image processing.  
-4. We select several representative tasks and propose the composite evaluation benchmark, **General-Visual-Bench**, to evaluate models general visual ability. This benchmark includes detection tasks (e.g., [COCO](https://cocodataset.org/#home), [RefCOCOg](https://github.com/lichengunc/refer)), segmentation tasks (e.g., [ReasonSeg](https://github.com/dvlab-research/LISA)), counting tasks (e.g., [CountBench](https://teaching-clip-to-count.github.io/)) and VQA tasks (e.g. [DocVQA](https://www.docvqa.org/)).
+VisionReasoner demonstrates following features:
+1. **VisionReasoner** is a unified framework for visual perception tasks. Through carefully crafted rewards and training strategy, VisionReasoner has strong multi-task capability, addressing diverse visual perception tasks within a shared model.  
+2. We select several representative tasks to evaluate models unified visual ability, including detection tasks (e.g., [COCO](https://cocodataset.org/#home), [RefCOCOg](https://github.com/lichengunc/refer)), segmentation tasks (e.g., [ReasonSeg](https://github.com/dvlab-research/LISA)), counting tasks (e.g., [CountBench](https://teaching-clip-to-count.github.io/)) and VQA tasks (e.g. [DocVQA](https://www.docvqa.org/)).   
+3. Experimental results show that VisionReasoner achieves superior performance across ten diverse visual perception tasks within a single unified framework, outperforming baseline models by a significant margin.   
+4. We have supported dozens of visual tasks categoried in [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [supported task types](supported_tasks.md) for details. These tasks are categoried as four foundamental task types: detection, segmentation, counting and VQA. More supported tasks and more foundamental task types can be added in this framework, such as 3D or medical image processing.  
 
 
 ## News
 
-<!-- [April 22th] We have released the training codes of Vision Manus. Please refer to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for details.  -->
-[April 19th, 2025] 🔥 Vision-Manus is coming! Vision-Manus is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).  
+[May 17th, 2025] 🔥 VisionReasoner is coming! VisionReasoner is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).  
 
 
 ## Contents
@@ -43,7 +40,8 @@ Vision-Manus demonstrates following features:
 <img width="98%" src="assets/pipeline.png"/>
 </div>
 
-Vision-Manus includes a task router module that convert dozens of vision tasks into several abstract tasks, followed by a core cognition module that deal with abstract tasks and output final results.  
+VisionReasoner model incorporates a reasoning module, which processing image and locates targeted objects, and a segmentation module that produces segmentation masks if needed.   
+Besides, we also train a task router that convert diverse vision tasks into given four foundamental task types.
 
 
 <!-- ## Examples
@@ -54,18 +52,33 @@ Vision-Manus includes a task router module that convert dozens of vision tasks i
 
 
 ## Installation
+> [!NOTE]
+> If you train VisionReasoner using codes in [Seg-Zero](https://github.com/dvlab-research/Seg-Zero), you can directly use the environment of the training codes.  
 
 ```bash
 git clone https://github.com/dvlab-research/VisionReasoner.git
 cd VisionReasoner
-conda create -n vision_reasoner python=3.12
-conda activate vision_reasoner
+conda create -n visionreasoner_test python=3.12
+conda activate visionreasoner_test
 pip3 install torch torchvision
 pip install -r requirements.txt
 ```
 
 
 ## Inference
+Download model using the following scripts: 
+```bash
+mkdir models
+cd models
+git lfs install
+git clone https://huggingface.co/Ricky06662/VisionReasoner-7B
+git clone https://huggingface.co/Ricky06662/TaskRouter-1.5B
+```
+> [!TIP]
+> If you encounter issues with connecting to Hugging Face, consider using `export HF_ENDPOINT=https://hf-mirror.com`.   
+
+
+Then run inference using:
 ```bash
 python vision_resoner/infererence.py
 ```
@@ -79,7 +92,7 @@ python vision_resoner/infererence.py
 
 You will get the thinking process in command line, like:
 
-> "The image shows a formation of airplanes flying in the sky. The planes are arranged in a specific pattern, and there are visible smoke trails behind them. The task is to count the number of airplanes in the image and identify their bounding boxes. The planes are evenly spaced, and the formation appears to be symmetrical. The bounding boxes will be around the planes themselves, not the smoke trails."
+> "The image shows a formation of airplanes flying in the sky. Each airplane is distinct and can be counted individually. The planes are arranged in a specific pattern, and there are visible trails of smoke behind them, which is typical for airshows or demonstrations."
 
 And you will get the final answer in command line, like:
 
@@ -93,9 +106,9 @@ python vision_resoner/infererence.py --image_path "assets/donuts.png" --query "p
 
 You will get the thinking process in command line, like:
 
-> "The task is to segment the donuts in the image. The goal is to identify the individual donuts and their bounding boxes. The donuts are of various colors and toppings, and they are arranged on a wooden surface. The bounding boxes will help in identifying the donuts and their positions relative to each other. The donuts are clearly separated, and the bounding boxes can be drawn around each donut based on their visible edges and shapes."
+> "The task involves identifying and segmenting individual donuts in the image. Each donut is distinct in its color, glaze, and toppings, which helps in distinguishing them from one another. The goal is to identify each donut as a separate object and provide bounding boxes for them."
 
-And the results will be presented in **inference_scripts** folder. 
+And the result will be presented in result_visualization.png. 
 
 <div align=center>
 <img width="98%" src="assets/donuts_output.png"/>
@@ -109,9 +122,9 @@ python vision_resoner/infererence.py --image_path "assets/stand_higher.png" --qu
 
 You will get the thinking process in command line, like:
 
-> " The woman is standing on a ladder, which is used to make her stand higher. The ladder is positioned against the side of the house, allowing her to reach the upper part of the wall. The ladder is the object that can make the woman stand higher, as it elevates her position relative to the ground."
+> "The question asks for objects that can make the woman stand higher. The woman is already standing on a ladder, which is the object that elevates her. The ladder is the most closely matched object to what can make her stand higher."
 
-And the results will be presented in **inference_scripts** folder. 
+And the result will be presented in result_visualization.png. 
 
 <div align=center>
 <img width="98%" src="assets/stand_higher_output.png"/>
@@ -123,14 +136,13 @@ And the results will be presented in **inference_scripts** folder.
 python vision_resoner/infererence.py --image_path "assets/company_name.png" --query "What is name of the company?"
 ``` 
 
-> "What is name of the company?"
 <div align=center>
 <img width="20%" src="assets/company_name.png"/>
 </div>
 
-You will get the final answer in command line, like:
+In VQA, there are no reasoning, and you will get the final answer in command line, like:
 
-> "The answer is:  ITC"
+> "The answer is: The name of the company is ITC (Indian Tobacco Company Limited)."
 
 ### You can also provide your own image_path and text by:
 ```bash
@@ -138,7 +150,7 @@ python vision_resoner/infererence.py --image_path "your_image_path" --query "you
 ```
 ## Evaluation
 
-The evaluation scripts allow you to test Vision-Manus on various datasets. We provide scripts for evaluating segmentation, detection, and counting tasks.
+The evaluation scripts allow you to test VisionReasoner on various datasets. We provide scripts for evaluating segmentation, detection, and counting tasks.
 
 ### Using the Evaluation Scripts
 
@@ -187,15 +199,13 @@ bash evaluation/eval_coco.sh Ricky06662/coco_val
 # Counting evaluation
 bash evaluation/eval_count.sh Ricky06662/counting_pixmo_validation
 bash evaluation/eval_count.sh Ricky06662/counting_pixmo_test
+bash evaluation/eval_count.sh Ricky06662/counting_countbench
 ```
 
 
 ## Training
 
-[TO BE UPDATED] For the core cognitive module, we recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for training details. 
-
-> [!NOTE]
-> Currently, the training environment is different from Vision Manus. And the training codes are to be updated.      
+We recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for training the VisionReasoner.  
 
 
 ## Citation
@@ -208,10 +218,10 @@ bash evaluation/eval_count.sh Ricky06662/counting_pixmo_test
   year         = {2025}
 }
 
-@misc{liu2025visionmanus,
-  title        = {Vision-Manus: Solving Dozens of Vision Tasks with One Assistant},
-  author       = {Liu, Yuqi and Qu, Tianyuan and Liu, Shu},
-  howpublished = {\url{https://github.com/dvlab-research/Vision-Manus}},
+@misc{liu2025visionreasoner,
+  title        = {VisionReasoner: Unified Visual Perception and Reasoning via Reinforcement Learning},
+  author       = {Liu, Yuqi and Qu, Tianyuan and Zhong, Zhisheng and Peng, Bohao and Liu, Shu and Yu, Bei and Jia, Jiaya},
+  howpublished = {\url{https://github.com/dvlab-research/VisionReasoner}},
   year         = {2025}
 }
 ```
@@ -225,4 +235,4 @@ We would like to thank the following repos for their great work:
 
 ## Star History
 
-<!-- [![Star History Chart](https://api.star-history.com/svg?repos=dvlab-research/Seg-Zero&type=Date)](https://star-history.com/#dvlab-research/Seg-Zero&Date) -->
+[![Star History Chart](https://api.star-history.com/svg?repos=dvlab-research/VisionReasoner&type=Date)](https://star-history.com/#dvlab-research/VisionReasoner&Date)

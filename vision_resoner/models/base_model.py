@@ -1,4 +1,3 @@
-# Vision-Manus/model/base_model.py
 from abc import ABC, abstractmethod
 
 class BaseVisionModel(ABC):

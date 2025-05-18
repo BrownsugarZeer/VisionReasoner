@@ -1,4 +1,3 @@
-# Vision-Manus/evaluation_scripts/decoupled_evaluation_vision_reasoner_count.py
 import argparse
 import torch
 import json
@@ -15,8 +14,8 @@ from vision_resoner.models.qwen_vl import QwenVLModel
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="vision_reasoner")
-    parser.add_argument("--model_path", type=str, default="Ricky06662/VisionReasoner-7B", choices=["Ricky06662/VisionReasoner-7B", "Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
-    parser.add_argument("--task_router_model_path", type=str, default="Ricky06662/TaskRouter-1.5B")
+    parser.add_argument("--model_path", type=str, default="models/VisionReasoner-7B", choices=["Ricky06662/VisionReasoner-7B", "Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
+    parser.add_argument("--task_router_model_path", type=str, default="models/TaskRouter-1.5B")
     parser.add_argument("--segmentation_model_path", type=str, default="facebook/sam2-hiera-large")
     parser.add_argument("--output_path", type=str, required=True)
     parser.add_argument("--test_data_path", type=str, required=True)

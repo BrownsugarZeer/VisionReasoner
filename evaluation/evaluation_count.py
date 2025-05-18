@@ -4,7 +4,7 @@ import torch
 import json
 import numpy as np
 import os
-from datasets import load_from_disk
+from datasets import load_from_disk, load_dataset
 from tqdm import tqdm
 import sys
 
@@ -15,11 +15,16 @@ from vision_resoner.models.qwen_vl import QwenVLModel
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="vision_reasoner")
+    parser.add_argument("--model_path", type=str, default="Ricky06662/VisionReasoner-7B", choices=["Ricky06662/VisionReasoner-7B", "Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
+    parser.add_argument("--task_router_model_path", type=str, default="Ricky06662/TaskRouter-1.5B")
+    parser.add_argument("--segmentation_model_path", type=str, default="facebook/sam2-hiera-large")
     parser.add_argument("--output_path", type=str, required=True)
     parser.add_argument("--test_data_path", type=str, required=True)
+    parser.add_argument("--batch_size", type=int, default=1)
+    
+    # for parallel evaluation
     parser.add_argument("--idx", type=int, required=True)
     parser.add_argument("--num_parts", type=int, required=True)
-    parser.add_argument("--batch_size", type=int, default=1)
     return parser.parse_args()
 
 def main():
@@ -27,14 +32,16 @@ def main():
     
     # Initialize model
     if args.model == "qwen":
-        model = QwenVLModel(model_path='Qwen/Qwen2.5-VL-7B-Instruct')
+        model = QwenVLModel(model_path=args.model_path)
     elif args.model == "qwen2":
-        model = QwenVLModel(model_path='Qwen/Qwen2-VL-7B-Instruct')
+        model = QwenVLModel(model_path=args.model_path)
     elif args.model == "vision_reasoner":
-        model = VisionReasonerModel(reasoning_model_path="Ricky06662/VisionReasoner-7B")
+        model = VisionReasonerModel(reasoning_model_path=args.model_path, 
+                                    task_router_model_path=args.task_router_model_path, 
+                                    segmentation_model_path=args.segmentation_model_path)
     
     # Load dataset
-    dataset = load_from_disk(args.test_data_path)['test']
+    dataset = load_dataset(args.test_data_path, split="test")
     total_len = len(dataset)
     part_size = total_len // args.num_parts
     start_idx = args.idx * part_size

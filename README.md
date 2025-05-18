@@ -136,18 +136,58 @@ You will get the final answer in command line, like:
 ```bash
 python vision_resoner/infererence.py --image_path "your_image_path" --query "your question text"
 ```
-
 ## Evaluation
 
-Please refer to evaluation folders for details. 
+The evaluation scripts allow you to test Vision-Manus on various datasets. We provide scripts for evaluating segmentation, detection, and counting tasks.
 
-For example, use this script to evaluate ReasonSeg dataset.
+### Using the Evaluation Scripts
+
+Each evaluation script accepts either a HuggingFace dataset path or a local dataset path:
+
+```bash
+# Using HuggingFace dataset paths (default in examples)
+bash evaluation/eval_segmentation.sh Ricky06662/refcoco_val
+
+# Using local dataset paths
+bash evaluation/eval_segmentation.sh /path/to/your/local/refcoco_val
+```
+
+Additionally, you can customize model paths with the following parameters:
+
+```bash
+# Using local model paths (instead of downloading from HuggingFace)
+bash evaluation/eval_segmentation.sh [dataset_path] \
+  --model_path /path/to/local/VisionReasoner-7B \
+  --task_router_model_path /path/to/local/TaskRouter-1.5B \
+  --segmentation_model_path /path/to/local/sam2-model
+```
+
+### Available Evaluation Scripts
+
+- `eval_segmentation.sh`: Evaluates segmentation performance on RefCOCO, RefCOCO+, RefCOCOg, and ReasonSeg datasets. When the dataset contains bounding box ground truth annotations, it will also output detection metrics.
+- `eval_coco.sh`: Evaluates detection performance on COCO dataset
+- `eval_count.sh`: Evaluates counting performance on counting benchmarks
+
+### Example Commands
 
 ```bash 
-bash evaluation/eval_segmentation.sh
-bash evaluation/eval_coco.sh
-bash evaluation/eval_count.sh
-``` 
+# Segmentation/Detection evaluation
+bash evaluation/eval_segmentation.sh Ricky06662/refcoco_val
+bash evaluation/eval_segmentation.sh Ricky06662/refcoco_testA
+bash evaluation/eval_segmentation.sh Ricky06662/refcocoplus_val
+bash evaluation/eval_segmentation.sh Ricky06662/refcocoplus_testA
+bash evaluation/eval_segmentation.sh Ricky06662/refcocog_val
+bash evaluation/eval_segmentation.sh Ricky06662/refcocog_test
+bash evaluation/eval_segmentation.sh Ricky06662/ReasonSeg_val
+bash evaluation/eval_segmentation.sh Ricky06662/ReasonSeg_test
+
+# COCO evaluation
+bash evaluation/eval_coco.sh Ricky06662/coco_val
+
+# Counting evaluation
+bash evaluation/eval_count.sh Ricky06662/counting_pixmo_validation
+bash evaluation/eval_count.sh Ricky06662/counting_pixmo_test
+```
 
 
 ## Training

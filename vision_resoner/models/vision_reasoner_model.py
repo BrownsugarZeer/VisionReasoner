@@ -24,7 +24,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
     def __init__(self, 
                  reasoning_model_path="Ricky06662/VisionReasoner-7B", 
                  segmentation_model_path="facebook/sam2-hiera-large",
-                 task_router_model_path="/gpfs/tyqu/research/verl/checkpoints/verl_grpo_task_route/qwen25_15b/global_step_90/actor/huggingface"):
+                 task_router_model_path="Ricky06662/TaskRouter-1.5B"):
         """
         Initialize the Vision-Manus model with reasoning and segmentation components
         

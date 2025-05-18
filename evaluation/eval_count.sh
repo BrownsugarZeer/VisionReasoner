@@ -2,9 +2,7 @@
 set -e
 
 MODEL_TYPE="vision_reasoner"  # Model type: qwen or vision_reasoner or qwen2
-TEST_DATA_PATH="/gpfs/yuqiliu/data/Ricky06662/counting_countbench"
-#TEST_DATA_PATH="/gpfs/yuqiliu/data/Ricky06662/counting_pixmo_validation"
-#TEST_DATA_PATH="/gpfs/yuqiliu/data/Ricky06662/counting_pixmo_test"
+TEST_DATA_PATH=${1:-"Ricky06662/counting_pixmo_test"}
 
 # Extract model name and test dataset name for output directory
 TEST_NAME=$(echo $TEST_DATA_PATH | sed -E 's/.*\/([^\/]+)$/\1/')

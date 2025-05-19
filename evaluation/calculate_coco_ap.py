@@ -79,37 +79,16 @@ def calculate_metrics(output_dir, gt_json_path):
         print(f"Maximum think text length: {max_think_length} characters")
         print(f"------------------------------------------------------------------\n")
     
-    coco_gt = COCO(gt_json_path)  # 加载真值
-    coco_dt = coco_gt.loadRes(pred_results)  # 加载预测结果
+    coco_gt = COCO(gt_json_path)  # load ground truth
+    coco_dt = coco_gt.loadRes(pred_results)  # load prediction results
 
-    # 初始化评测对象（任务类型：bbox/keypoints/segmentation）
-    coco_eval = COCOeval(coco_gt, coco_dt, 'bbox')  # 选择任务类型
+    # initialize evaluation object (task type: bbox/keypoints/segmentation)
+    coco_eval = COCOeval(coco_gt, coco_dt, 'bbox')  # select task type
 
-    # 运行评测
-    coco_eval.evaluate()  # 计算匹配
-    coco_eval.accumulate()  # 统计指标
-    coco_eval.summarize()  # 输出结果
-    
-    print("-----------------Constant Score----------------------------------")
-    
-    
-    coco_dt_constant_score = coco_gt.loadRes(pred_results_constant_score)
-    coco_eval = COCOeval(coco_gt, coco_dt_constant_score, 'bbox')  # 选择任务类型
-
-    # 运行评测
-    coco_eval.evaluate()  # 计算匹配
-    coco_eval.accumulate()  # 统计指标
-    coco_eval.summarize()  # 输出结果
-    
-    print("-----------------Constant Exist Score----------------------------------")
-    
-    coco_dt_constant_exist_score = coco_gt.loadRes(pred_results_constant_exist_score)
-    coco_eval = COCOeval(coco_gt, coco_dt_constant_exist_score, 'bbox')  # 选择任务类型
-
-    # 运行评测
-    coco_eval.evaluate()  # 计算匹配
-    coco_eval.accumulate()  # 统计指标
-    coco_eval.summarize()  # 输出结果
+    # run evaluation
+    coco_eval.evaluate()  # calculate matches
+    coco_eval.accumulate()  # accumulate metrics
+    coco_eval.summarize()  # output results
     
 
 if __name__ == "__main__":

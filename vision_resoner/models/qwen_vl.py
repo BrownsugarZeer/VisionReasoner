@@ -364,8 +364,6 @@ class QwenVLModel(BaseVisionModel, DetectionModel, SegmentationModel, CountingMo
             
             for bbox, point in zip(bboxes, points):
                 masks, scores, _ = self.segmentation_model.predict(
-                    #point_coords=[point],
-                    #point_labels=[1],
                     box=bbox
                 )
                 sorted_ind = np.argsort(scores)[::-1]

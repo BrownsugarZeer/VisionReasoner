@@ -1,8 +1,5 @@
 import matplotlib.pyplot as plt
-import matplotlib.patches as patches
 import numpy as np
-import json
-from PIL import Image
 
 def visualize_results_enhanced(image, result, task_type, output_path):
     """

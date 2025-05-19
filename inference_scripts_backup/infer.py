@@ -41,7 +41,7 @@ def extract_task_type(response):
     number_pattern = r'(?:type|category|task)?\s*(?:is|:)?\s*([1-4])'
     number_matches = re.findall(number_pattern, response)
     if number_matches:
-        number = int(number_matches[-1])  # 取最后一个匹配的数字
+        number = int(number_matches[-1]) 
         if number == 1:
             return 'seg/det'
         elif number == 2:
@@ -182,7 +182,6 @@ def cognitive_model_generation(cognitive_model, cognitive_processor, image, user
 def main():
     args = parse_args()
     
-    #We recommend enabling flash_attention_2 for better acceleration and memory saving, especially in multi-image and video scenarios.
     router_model = AutoModelForCausalLM.from_pretrained(
         args.router_model_path,
         torch_dtype=torch.bfloat16,
@@ -203,7 +202,6 @@ def main():
     
     cognitive_model.eval()
     
-    # default processer
     cognitive_processor = AutoProcessor.from_pretrained(args.cognitive_model_path, padding_side="left")
 
     print("User question: ", args.text)
@@ -220,7 +218,6 @@ def main():
     
     output_text = cognitive_model_generation(cognitive_model, cognitive_processor, image, args.text, task_type)
     
-    # pdb.set_trace()
     if task_type == 'vqa':
         print("The answer is: ", output_text)
         return 
@@ -232,7 +229,6 @@ def main():
     if task_type == "count":
         print("Total number of interested objects is: ", len(points))
         return 
-    # pdb.set_trace()
     
     with torch.inference_mode(), torch.autocast("cuda", dtype=torch.bfloat16):
         mask_all = np.zeros((raw_image.height, raw_image.width), dtype=bool)
@@ -248,29 +244,24 @@ def main():
             mask = masks[0].astype(bool)
             mask_all = np.logical_or(mask_all, mask)
     
-    # 修改为1行3列的子图布局
     plt.figure(figsize=(12, 4))
     
-    # 第一个子图：原图
     plt.subplot(1, 3, 1)
     plt.imshow(raw_image)
     plt.title('Original Image')
     
-    # 第二个子图：原图+bbox
     plt.subplot(1, 3, 2)
     plt.imshow(raw_image)
-    # 绘制所有bbox
+    
     for bbox in bboxes:
         x1, y1, x2, y2 = bbox
         rect = plt.Rectangle((x1, y1), x2-x1, y2-y1, 
                            fill=False, edgecolor='red', linewidth=2)
         plt.gca().add_patch(rect)
-        # 可选：绘制对应的点
         for point in points:
             plt.plot(point[0], point[1], 'go', markersize=8)  # 绿色点
     plt.title('Image with Bounding Boxes')
     
-    # 第三个子图：mask叠加
     plt.subplot(1, 3, 3)
     plt.imshow(raw_image, alpha=0.6)
     mask_overlay = np.zeros_like(raw_image)

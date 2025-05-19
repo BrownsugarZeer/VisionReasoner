@@ -68,8 +68,8 @@ pip install -r requirements.txt
 ## Inference
 Download model using the following scripts: 
 ```bash
-mkdir models
-cd models
+mkdir pretrained_models
+cd pretrained_models
 git lfs install
 git clone https://huggingface.co/Ricky06662/VisionReasoner-7B
 git clone https://huggingface.co/Ricky06662/TaskRouter-1.5B

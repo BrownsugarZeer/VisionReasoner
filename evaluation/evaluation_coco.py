@@ -16,8 +16,8 @@ from vision_resoner.models.qwen_vl import QwenVLModel
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="vision_reasoner")
-    parser.add_argument("--model_path", type=str, default="models/VisionReasoner-7B", choices=["Ricky06662/VisionReasoner-7B", "Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
-    parser.add_argument("--task_router_model_path", type=str, default="models/TaskRouter-1.5B")
+    parser.add_argument("--model_path", type=str, default="pretrained_models/VisionReasoner-7B", choices=["Ricky06662/VisionReasoner-7B", "Qwen/Qwen2.5-VL-7B-Instruct", "Qwen/Qwen2-VL-7B-Instruct"])
+    parser.add_argument("--task_router_model_path", type=str, default="pretrained_models/TaskRouter-1.5B")
     parser.add_argument("--segmentation_model_path", type=str, default="facebook/sam2-hiera-large")
     parser.add_argument("--output_path", type=str, required=True)
     parser.add_argument("--test_data_path", type=str, required=True)
@@ -118,16 +118,16 @@ def process_batch(model, batch_images, batch_questions, id_list, all_outputs):
             gt_bboxes = id_list[i]["bbox"]
 
             if gt_bboxes and len(bboxes) > 0:
-                # Use vectorized calculation of IOU matrix
-                cost_matrix = -compute_bbox_iou(bboxes, gt_bboxes)  # Use negative IOU as cost
+                # # Use vectorized calculation of IOU matrix
+                # cost_matrix = -compute_bbox_iou(bboxes, gt_bboxes)  # Use negative IOU as cost
                 
-                # Use Hungarian algorithm for matching
-                pred_indices, gt_indices = linear_sum_assignment(cost_matrix)
+                # # Use Hungarian algorithm for matching
+                # pred_indices, gt_indices = linear_sum_assignment(cost_matrix)
                 
-                # Assign scores to each predicted box
-                scores = np.zeros(len(bboxes))
-                for pred_idx, gt_idx in zip(pred_indices, gt_indices):
-                    scores[pred_idx] = -cost_matrix[pred_idx, gt_idx]  # Convert back to positive IOU value
+                # # Assign scores to each predicted box
+                # scores = np.zeros(len(bboxes))
+                # for pred_idx, gt_idx in zip(pred_indices, gt_indices):
+                #     scores[pred_idx] = -cost_matrix[pred_idx, gt_idx]  # Convert back to positive IOU value
                 
                 # Add results
                 for pred_idx, pred_bbox in enumerate(bboxes):
@@ -153,10 +153,10 @@ def process_batch(model, batch_images, batch_questions, id_list, all_outputs):
                     })
             
         except Exception as e:
-            raise
+            # raise
             print(f"Error processing result: {e}")
             # Skip this because the implementation is different from the original
-            continues
+            continue
 
 if __name__ == "__main__":
     main()

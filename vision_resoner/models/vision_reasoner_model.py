@@ -1,4 +1,3 @@
-# Vision-Manus/model/vision_manus_model.py
 import torch
 import numpy as np
 import re
@@ -19,14 +18,14 @@ from .task_router import TaskRouter
 
 class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, CountingModel, QAModel):
     """
-    VisionManus model implementing all task interfaces
+    VisionReasoner model implementing all task interfaces
     """
     def __init__(self, 
                  reasoning_model_path="Ricky06662/VisionReasoner-7B", 
                  segmentation_model_path="facebook/sam2-hiera-large",
                  task_router_model_path="Ricky06662/TaskRouter-1.5B"):
         """
-        Initialize the Vision-Manus model with reasoning and segmentation components
+        Initialize the VisionReasoner model with reasoning and segmentation components
         
         Args:
             reasoning_model_path (str): Path to the reasoning model

@@ -10,8 +10,8 @@ from utils import visualize_results_enhanced
 
 def main():
     parser = argparse.ArgumentParser(description="Test unified vision model on a single image")
-    parser.add_argument("--model_path", type=str, default='Ricky06662/VisionReasoner-7B', help="Path to the model")
-    parser.add_argument("--task_router_model_path", type=str, default="Ricky06662/TaskRouter-1.5B")
+    parser.add_argument("--model_path", type=str, default='pretrained_models/VisionReasoner-7B', help="Path to the model")
+    parser.add_argument("--task_router_model_path", type=str, default="pretrained_models/TaskRouter-1.5B")
     parser.add_argument("--segmentation_model_path", type=str, default="facebook/sam2-hiera-large")
     parser.add_argument("--image_path", type=str, default='assets/airplanes.png', help="Path to the input image")
     parser.add_argument("--query", type=str, default='How many airplanes are there in this image?', help="Query/instruction for the model")

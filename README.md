@@ -17,7 +17,7 @@ VisionReasoner demonstrates following features:
 1. **VisionReasoner** is a unified framework for visual perception tasks. Through carefully crafted rewards and training strategy, VisionReasoner has strong multi-task capability, addressing diverse visual perception tasks within a shared model.  
 2. We select several representative tasks to evaluate models unified visual ability, including detection tasks (e.g., [COCO](https://cocodataset.org/#home), [RefCOCOg](https://github.com/lichengunc/refer)), segmentation tasks (e.g., [ReasonSeg](https://github.com/dvlab-research/LISA)), counting tasks (e.g., [CountBench](https://teaching-clip-to-count.github.io/)) and VQA tasks (e.g. [DocVQA](https://www.docvqa.org/)).   
 3. Experimental results show that VisionReasoner achieves superior performance across ten diverse visual perception tasks within a single unified framework, outperforming baseline models by a significant margin.   
-4. We have reformulated dozens of visual task types categoried in [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [task categorization](task_categorization.md) for details. These task types are categoried as four foundamental task types: detection, segmentation, counting and VQA. More supported task types and more foundamental task types can be added in this framework, such as 3D or medical image processing.  
+4. We have reformulated dozens of visual task types categoried in [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [task categorization](task_categorization.md) for details. These task types are categoried as four fundamental task types: detection, segmentation, counting and VQA. More supported task types and more fundamental task types can be added in this framework, such as 3D or medical image processing.  
 
 
 ## News
@@ -43,7 +43,7 @@ VisionReasoner demonstrates following features:
 </div>
 
 VisionReasoner model incorporates a reasoning module, which processing image and locates targeted objects, and a segmentation module that produces segmentation masks if needed.   
-Besides, we also train a task router that convert diverse vision tasks into given four foundamental task types.
+Besides, we also train a task router that convert diverse vision tasks into given four fundamental task types.
 
 
 <!-- ## Examples
@@ -151,7 +151,7 @@ In VQA, there are no reasoning, and you will get the final answer in command lin
 python vision_reasoner/inference.py --image_path "your_image_path" --query "your question text"
 ```
 
-### Turning on hybrid reason mode:
+### Turning on hybrid reasoning mode:
 When hybrid reasoning mode is enabled, VisionReasoner intelligently switches between direct detection (using YOLO-World) and reasoning-based approaches based on the complexity of the query. This allows for faster responses on simple queries while maintaining detailed reasoning for complex tasks.
 
 #### Simple Query Example:
@@ -244,7 +244,7 @@ bash evaluation/eval_count.sh Ricky06662/counting_countbench
 
 ## Training
 
-We recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for training the VisionReasoner.  
+We recommend you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for training the VisionReasoner.  
 
 
 ## Citation

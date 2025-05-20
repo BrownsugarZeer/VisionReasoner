@@ -269,7 +269,7 @@ We recommend you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for t
 We would like to thank the following repos for their great work: 
 
 - This work is built upon the [Seg-Zero](https://github.com/dvlab-research/Seg-Zero), [EasyR1](https://github.com/hiyouga/EasyR1) and [veRL](https://github.com/volcengine/verl).
-- This work utilizes models from  [Qwen2-VL](https://huggingface.co/Qwen/Qwen2-VL-2B-Instruct), [Qwen2.5-VL](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct), [SAM2](https://huggingface.co/facebook/sam2-hiera-large) and [YOLO-WORLD](https://github.com/AILab-CVC/YOLO-World). 
+- This work utilizes models from  [Qwen2-VL](https://huggingface.co/Qwen/Qwen2-VL-2B-Instruct), [Qwen2.5-VL](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct), [SAM2](https://huggingface.co/facebook/sam2-hiera-large) and [YOLO-World](https://github.com/AILab-CVC/YOLO-World). 
 
 
 ## Star History

@@ -2,9 +2,10 @@
 
 > Current VLMs are primarily used for visual captioning or visual QA tasks. In this project, we take a step further by demonstrating the potential of a single VLM to solve diverse vision tasks. We hope this work will advance the frontier of VLM research and expand the boundaries of what these models can achieve.  
 
-<!-- Paper: [📖 VisionReasoner](https://arxiv.org/abs/2503.06520)   
-HuggingFace Daily: [🤗 Seg-Zero](https://huggingface.co/papers/2503.06520)   -->
-Model: [🤗 VisionReasoner-7B](https://huggingface.co/Ricky06662/VisionReasoner-7B) [🤗 TaskRouter-1.5B](https://huggingface.co/Ricky06662/TaskRouter-1.5B)   
+Paper: [📖 VisionReasoner](https://arxiv.org/pdf/2505.12081) [📖 Seg-Zero](https://arxiv.org/abs/2503.06520)         
+HuggingFace Daily: [🤗 VisionReasoner](https://huggingface.co/papers/2505.12081)  
+Model: [🤗 VisionReasoner-7B](https://huggingface.co/Ricky06662/VisionReasoner-7B) [🤗 TaskRouter-1.5B](https://huggingface.co/Ricky06662/TaskRouter-1.5B)  
+Relative Link: [Seg-Zero![[code]](https://img.shields.io/github/stars/dvlab-research/Seg-Zero)](https://github.com/dvlab-research/Seg-Zero)   
 
 Overview of VisionReasoner:
 
@@ -16,11 +17,12 @@ VisionReasoner demonstrates following features:
 1. **VisionReasoner** is a unified framework for visual perception tasks. Through carefully crafted rewards and training strategy, VisionReasoner has strong multi-task capability, addressing diverse visual perception tasks within a shared model.  
 2. We select several representative tasks to evaluate models unified visual ability, including detection tasks (e.g., [COCO](https://cocodataset.org/#home), [RefCOCOg](https://github.com/lichengunc/refer)), segmentation tasks (e.g., [ReasonSeg](https://github.com/dvlab-research/LISA)), counting tasks (e.g., [CountBench](https://teaching-clip-to-count.github.io/)) and VQA tasks (e.g. [DocVQA](https://www.docvqa.org/)).   
 3. Experimental results show that VisionReasoner achieves superior performance across ten diverse visual perception tasks within a single unified framework, outperforming baseline models by a significant margin.   
-4. We have supported dozens of visual tasks categoried in [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [supported task types](supported_tasks.md) for details. These tasks are categoried as four foundamental task types: detection, segmentation, counting and VQA. More supported tasks and more foundamental task types can be added in this framework, such as 3D or medical image processing.  
+4. We have reformulated dozens of visual task types categoried in [Papers With Code](https://paperswithcode.com/datasets?mod=images&page=1). Please refer to [task categorization](task_categorization.md) for details. These task types are categoried as four foundamental task types: detection, segmentation, counting and VQA. More supported task types and more foundamental task types can be added in this framework, such as 3D or medical image processing.  
 
 
 ## News
 
+[May 17th, 2025] 🔥 [📖 Paper](https://arxiv.org/pdf/2505.12081) is coming!   
 [May 17th, 2025] 🔥 VisionReasoner is coming! VisionReasoner is based on our previous [Seg-Zero](https://github.com/dvlab-research/Seg-Zero).  
 
 
@@ -258,7 +260,7 @@ We recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for t
 @misc{liu2025visionreasoner,
   title        = {VisionReasoner: Unified Visual Perception and Reasoning via Reinforcement Learning},
   author       = {Liu, Yuqi and Qu, Tianyuan and Zhong, Zhisheng and Peng, Bohao and Liu, Shu and Yu, Bei and Jia, Jiaya},
-  howpublished = {\url{https://github.com/dvlab-research/VisionReasoner}},
+  howpublished = {arXiv preprint arXiv:2505.12081},
   year         = {2025}
 }
 ```

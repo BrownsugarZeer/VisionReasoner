@@ -76,7 +76,7 @@ def calculate_metrics(output_dir):
     # print the results
     print(f"gIoU (average of per image IoU): {gIoU:.4f}")
     print(f"cIoU (total_intersection / total_union): {cIoU:.4f}")
-    print(f"bbox_iou (average of per image bbox_iou): {bbox_iou:.4f}")
+    print(f"bbox_AP (average of per image bbox_AP): {bbox_iou:.4f}")
 
 if __name__ == "__main__":
     args = parse_args()

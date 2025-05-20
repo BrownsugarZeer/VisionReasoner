@@ -5,6 +5,7 @@ import json
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 from PIL import Image as PILImage
+from ultralytics import YOLOWorld
 
 from .base_model import (
     BaseVisionModel,
@@ -23,7 +24,8 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
     def __init__(self, 
                  reasoning_model_path="Ricky06662/VisionReasoner-7B", 
                  segmentation_model_path="facebook/sam2-hiera-large",
-                 task_router_model_path="Ricky06662/TaskRouter-1.5B"):
+                 task_router_model_path="Ricky06662/TaskRouter-1.5B",
+                 yolo_model_path=None):
         """
         Initialize the VisionReasoner model with reasoning and segmentation components
         
@@ -61,6 +63,12 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
         
         # Template for QA tasks
         self.QA_TEMPLATE = "{Question}"
+
+        # Initialize YOLO model
+        self.use_hybrid_mode = False
+        if yolo_model_path:
+            self.use_hybrid_mode = True
+            self.yolo_model = YOLOWorld(yolo_model_path)
 
     
     def extract_bbox_points_think(self, output_text, x_factor, y_factor):
@@ -128,7 +136,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             "full_response": output_text
         }
     
-    def generate_masks(self, image, bboxes, points):
+    def generate_masks(self, image, bboxes, points=None):
         """
         Generate segmentation masks for given image, bounding boxes and points
         
@@ -143,22 +151,32 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
         img_height, img_width = image.height, image.width
         mask_all = np.zeros((img_height, img_width), dtype=bool)
         
-        if not bboxes or not points:
+        if not bboxes:
+            return mask_all
+        
+        if points and len(points) != len(bboxes):
             return mask_all
         
         try:
             self.segmentation_model.set_image(image)
-            
-            for bbox, point in zip(bboxes, points):
-                masks, scores, _ = self.segmentation_model.predict(
-                    point_coords=[point],
-                    point_labels=[1],
-                    box=bbox
-                )
-                sorted_ind = np.argsort(scores)[::-1]
-                masks = masks[sorted_ind]
-                mask = masks[0].astype(bool)
-                mask_all = np.logical_or(mask_all, mask)
+            if points:
+                for bbox, point in zip(bboxes, points):
+                    masks, scores, _ = self.segmentation_model.predict(
+                        point_coords=[point],
+                        point_labels=[1],
+                        box=bbox
+                    )
+                    sorted_ind = np.argsort(scores)[::-1]
+                    masks = masks[sorted_ind]
+                    mask = masks[0].astype(bool)
+                    mask_all = np.logical_or(mask_all, mask)
+            else:
+                for bbox in bboxes:
+                    masks, scores, _ = self.segmentation_model.predict(
+                        box=bbox
+                    )
+                    sorted_ind = np.argsort(scores)[::-1]
+                    masks = masks[sorted_ind]
                 
             return mask_all
         except Exception as e:
@@ -292,6 +310,62 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             results.append(result)
         return results
     
+    def detect_objects_yolo(self, image, query):
+        """
+        Detect objects in an image based on a query using YOLOE model
+        
+        Args:
+            image: Input image
+            query: Text query describing what to detect
+            
+        Returns:
+            dict: Results with bounding boxes and scores
+        """
+        # Initialize a YOLOE model
+        names = [query]
+        self.yolo_model.set_classes(names)
+
+        # Run detection on the given image
+        results = self.yolo_model.predict(image)
+        
+        # Get original image dimensions
+        img_height, img_width = image.height, image.width
+        
+        # Get YOLO's input size
+        yolo_input_size = results[0].orig_shape
+        
+        # Calculate scaling factors
+        x_scale = img_width / yolo_input_size[1]
+        y_scale = img_height / yolo_input_size[0]
+        
+        # Scale the bounding boxes back to original image size
+        bboxes = results[0].boxes.xyxy
+        scaled_bboxes = []
+        for bbox in bboxes:
+            scaled_bbox = [
+                int(bbox[0] * x_scale),
+                int(bbox[1] * y_scale),
+                int(bbox[2] * x_scale),
+                int(bbox[3] * y_scale)
+            ]
+            scaled_bboxes.append(scaled_bbox)
+
+        return scaled_bboxes
+
+    def if_yolo_condition(self, query):
+        """
+        Check if YOLO should be used for the given query
+        
+        Args:
+            query (str): Text query describing what to detect
+            
+        Returns:
+            bool: True if YOLO should be used, False otherwise
+        """
+
+        # trivial condition
+        return len(query.lower().strip(".\"?!").split(" ")) < 5
+    
     # DetectionModel implementation
     def detect_objects(self, image, query):
         """
@@ -305,20 +379,27 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             dict: Results with bounding boxes and scores
         """
         try:
-            output_text, (x_factor, y_factor) = self._generate_model_output(
-                image,
-                query,
-                self.DETECTION_TEMPLATE
-            )
-            
-            bboxes, points, thinking, pred_answer = self.extract_bbox_points_think(
-                output_text, 
-                x_factor, 
-                y_factor
-            )
-            
-            # Assign confidence scores (all 1.0 as the model doesn't provide them)
-            scores = [1.0] * len(bboxes)
+            if self.use_hybrid_mode and self.if_yolo_condition(query):
+                bboxes = self.detect_objects_yolo(image, query)
+                scores = [1.0] * len(bboxes)
+                # use middle point of bbox as point
+                points = [[int((bbox[0] + bbox[2]) / 2), int((bbox[1] + bbox[3]) / 2)] for bbox in bboxes]
+                output_text, thinking, pred_answer = "", "", str(bboxes)
+            else:
+                output_text, (x_factor, y_factor) = self._generate_model_output(
+                    image,
+                    query,
+                    self.DETECTION_TEMPLATE
+                )
+                
+                bboxes, points, thinking, pred_answer = self.extract_bbox_points_think(
+                    output_text, 
+                    x_factor, 
+                    y_factor
+                )
+                
+                # Assign confidence scores (all 1.0 as the model doesn't provide them)
+                scores = [1.0] * len(bboxes)
             
             return {
                 "bboxes": bboxes,
@@ -329,7 +410,6 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
                 "pred_answer": pred_answer
             }
         except Exception as e:
-            raise
             print(f"Error in detection: {e}")
             return {
                 "bboxes": [],
@@ -352,6 +432,8 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             list: List of detection results
         """
         try:
+            # TODO: support yolo for batch
+
             output_texts, scale_factors = self._generate_model_output(
                 images,
                 queries,
@@ -401,18 +483,23 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             dict: Results with masks and bounding boxes
         """
         try:
-            output_text, (x_factor, y_factor) = self._generate_model_output(
-                image,
-                query,
-                self.DETECTION_TEMPLATE
-            )
-            
-            bboxes, points, thinking, pred_answer = self.extract_bbox_points_think(
-                output_text, 
-                x_factor, 
-                y_factor
-            )
-            
+            if self.use_hybrid_mode and self.if_yolo_condition(query):
+                #bboxes, masks = self.segment_objects_yolo(image, query)
+                bboxes = self.detect_objects_yolo(image, query)
+                # use middle point of bbox as point
+                points = [[int((bbox[0] + bbox[2]) / 2), int((bbox[1] + bbox[3]) / 2)] for bbox in bboxes]
+                output_text, thinking, pred_answer = "", "", str(bboxes)
+            else:
+                output_text, (x_factor, y_factor) = self._generate_model_output(
+                    image,
+                    query,
+                    self.DETECTION_TEMPLATE
+                )
+                bboxes, points, thinking, pred_answer = self.extract_bbox_points_think(
+                    output_text, 
+                    x_factor, 
+                    y_factor
+                )
             masks = self.generate_masks(image, bboxes, points)
             
             return {
@@ -424,6 +511,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
                 "pred_answer": pred_answer
             }
         except Exception as e:
+            raise
             print(f"Error in segmentation: {e}")
             img_height, img_width = image.height, image.width
             return {
@@ -447,6 +535,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             list: List of segmentation results
         """
         try:
+            # TODO: support yolo for batch
             output_texts, scale_factors = self._generate_model_output(
                 images,
                 queries,
@@ -496,17 +585,23 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             dict: Results with count and bounding boxes
         """
         try:
-            output_text, (x_factor, y_factor) = self._generate_model_output(
-                image,
-                query,
-                self.DETECTION_TEMPLATE
-            )
-            
-            bboxes, points, thinking, pred_answer = self.extract_bbox_points_think(
-                output_text, 
-                x_factor, 
-                y_factor
-            )
+            if self.use_hybrid_mode and self.if_yolo_condition(query):
+                bboxes = self.detect_objects_yolo(image, query)
+                # use middle point of bbox as point
+                points = [[int((bbox[0] + bbox[2]) / 2), int((bbox[1] + bbox[3]) / 2)] for bbox in bboxes]
+                output_text, thinking, pred_answer = "", "", str(bboxes)
+            else:
+                output_text, (x_factor, y_factor) = self._generate_model_output(
+                    image,
+                    query,
+                    self.DETECTION_TEMPLATE
+                )
+                
+                bboxes, points, thinking, pred_answer = self.extract_bbox_points_think(
+                    output_text, 
+                    x_factor, 
+                    y_factor
+                )
             
             count = len(bboxes)
             
@@ -541,6 +636,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             list: List of counting results
         """
         try:
+            # TODO: support yolo for batch
             output_texts, scale_factors = self._generate_model_output(
                 images,
                 queries,

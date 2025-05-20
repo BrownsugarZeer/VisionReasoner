@@ -2,7 +2,7 @@ import torch
 import numpy as np
 import re
 import json
-from transformers import AutoModelForCausalLM, AutoProcessor, Qwen2_5_VLForConditionalGeneration, Qwen2VLForConditionalGeneration
+from transformers import AutoProcessor, Qwen2_5_VLForConditionalGeneration, Qwen2VLForConditionalGeneration
 from PIL import Image as PILImage
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 from qwen_vl_utils import process_vision_info

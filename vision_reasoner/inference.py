@@ -1,10 +1,8 @@
 # test_qwen_vl_model.py
 import argparse
 from PIL import Image
-import numpy as np
-import matplotlib.pyplot as plt
 import os
-
+os.environ["CUDA_VISIBLE_DEVICES"] = "5"
 from models.vision_reasoner_model import VisionReasonerModel
 from utils import visualize_results_enhanced
 
@@ -18,12 +16,19 @@ def main():
     parser.add_argument("--task", type=str, choices=["auto", "detection", "segmentation", "counting", "qa"], 
                         default="auto", help="Task type (default: auto)")
     parser.add_argument("--output_path", type=str, default="result_visualization.png", help="Path to save the output visualization")
-    
+    parser.add_argument("--hybrid_mode", action="store_true", help="Whether to use YOLO for object detection")
+    parser.add_argument("--yolo_model_path", type=str, default="yolov8x-worldv2.pt", help="Path to the YOLO model")
     args = parser.parse_args()
     
     # Load model
     print(f"Loading model from {args.model_path}...")
-    model = VisionReasonerModel(reasoning_model_path=args.model_path, 
+    if args.hybrid_mode:
+        model = VisionReasonerModel(reasoning_model_path=args.model_path, 
+                                task_router_model_path=args.task_router_model_path, 
+                                segmentation_model_path=args.segmentation_model_path,
+                                yolo_model_path=args.yolo_model_path)
+    else:
+        model = VisionReasonerModel(reasoning_model_path=args.model_path, 
                                 task_router_model_path=args.task_router_model_path, 
                                 segmentation_model_path=args.segmentation_model_path)
 

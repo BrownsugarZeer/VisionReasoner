@@ -11,8 +11,8 @@ from scipy.optimize import linear_sum_assignment
 
 # Add the parent directory to the Python path to import model module
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from vision_resoner.models.vision_reasoner_model import VisionReasonerModel
-from vision_resoner.models.qwen_vl import QwenVLModel
+from vision_reasoner.models.vision_reasoner_model import VisionReasonerModel
+from vision_reasoner.models.qwen_vl import QwenVLModel
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--model", type=str, default="vision_reasoner")

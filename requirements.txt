@@ -23,3 +23,4 @@ transformers
 vllm
 wandb
 sam2
+ultralytics

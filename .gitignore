@@ -180,3 +180,10 @@ prepare_dataset
 result_visualization.png
 detection_eval_results/
 pretrained_models/
+test_scripts.sh
+test_yoloe.py
+mobileclip_blt.ts
+yolov8l-world.pt
+yolov8x-worldv2.pt
+result_visualization_fail.png
+crowd_people.png

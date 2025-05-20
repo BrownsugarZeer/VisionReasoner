@@ -4,7 +4,7 @@
 
 <!-- Paper: [📖 VisionReasoner](https://arxiv.org/abs/2503.06520)   
 HuggingFace Daily: [🤗 Seg-Zero](https://huggingface.co/papers/2503.06520)   -->
-Model: [🤗 VisionReasoner-7B](https://huggingface.co/Ricky06662/VisionReasoner-7B) 
+Model: [🤗 VisionReasoner-7B](https://huggingface.co/Ricky06662/VisionReasoner-7B) [🤗 TaskRouter-1.5B](https://huggingface.co/Ricky06662/TaskRouter-1.5B)   
 
 Overview of VisionReasoner:
 
@@ -80,7 +80,7 @@ git clone https://huggingface.co/Ricky06662/TaskRouter-1.5B
 
 Then run inference using:
 ```bash
-python vision_resoner/infererence.py
+python vision_reasoner/inference.py
 ```
 ### The default task is a counting task.  
 > "How many airplanes are there in this image?"
@@ -101,7 +101,7 @@ And you will get the final answer in command line, like:
 
 ### You can also try a detection / segmentation task by:  
 ```bash
-python vision_resoner/infererence.py --image_path "assets/donuts.png" --query "please segment the donuts"
+python vision_reasoner/inference.py --image_path "assets/donuts.png" --query "please segment the donuts"
 ```
 
 You will get the thinking process in command line, like:
@@ -117,7 +117,7 @@ And the result will be presented in result_visualization.png.
 ### Or some tasks that need reasoning: 
 
 ```bash
-python vision_resoner/infererence.py --image_path "assets/stand_higher.png" --query "find what can make the woman stand higher?"
+python vision_reasoner/inference.py --image_path "assets/stand_higher.png" --query "find what can make the woman stand higher?"
 ```
 
 You will get the thinking process in command line, like:
@@ -133,7 +133,7 @@ And the result will be presented in result_visualization.png.
 
 ### We also support naive visual QA / captioning task:
 ```bash
-python vision_resoner/infererence.py --image_path "assets/company_name.png" --query "What is name of the company?"
+python vision_reasoner/inference.py --image_path "assets/company_name.png" --query "What is name of the company?"
 ``` 
 
 <div align=center>
@@ -146,8 +146,45 @@ In VQA, there are no reasoning, and you will get the final answer in command lin
 
 ### You can also provide your own image_path and text by:
 ```bash
-python vision_resoner/infererence.py --image_path "your_image_path" --query "your question text"
+python vision_reasoner/inference.py --image_path "your_image_path" --query "your question text"
 ```
+
+### Turning on hybrid reason mode:
+When hybrid reasoning mode is enabled, VisionReasoner intelligently switches between direct detection (using YOLO-World) and reasoning-based approaches based on the complexity of the query. This allows for faster responses on simple queries while maintaining detailed reasoning for complex tasks.
+
+#### Simple Query Example:
+For straightforward queries that can be directly answered by object detection:
+
+```bash
+python vision_reasoner/inference.py --image "assets/crowd.png" --query "person" --hybrid_mode 
+```
+
+Output:
+
+<div align=center>
+<img width="100%" src="assets/crowd_output_1.png"/>
+</div>
+
+In this case, the model directly uses YOLO for detection without going through the reasoning process, resulting in faster response times.
+
+#### Complex Query Example:
+For queries that require spatial reasoning or complex understanding:
+
+```bash
+python vision_reasoner/inference.py --image "assets/crowd.png" --query "the person who is facing to the camera" --hybrid_mode 
+```
+
+Output:
+> Thinking process: The task involves identifying the person who is facing the camera and then finding the most closely matched object. In the image, there is a person in the center wearing a white shirt and a black vest, who appears to be facing the camera directly. The other individuals are walking away from the camera, so they are not the target. The person in the white shirt and black vest is the closest match to the description of facing the camera.
+
+
+<div align=center>
+<img width="100%" src="assets/crowd_output_2.png"/>
+</div>
+
+In this case, the model switches to the reasoning-based approach because the query requires understanding spatial relationships and visual attributes.
+
+
 ## Evaluation
 
 The evaluation scripts allow you to test VisionReasoner on various datasets. We provide scripts for evaluating segmentation, detection, and counting tasks.
@@ -230,7 +267,7 @@ We recommand you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for t
 We would like to thank the following repos for their great work: 
 
 - This work is built upon the [Seg-Zero](https://github.com/dvlab-research/Seg-Zero), [EasyR1](https://github.com/hiyouga/EasyR1) and [veRL](https://github.com/volcengine/verl).
-- This work utilizes models from  [Qwen2-VL](https://huggingface.co/Qwen/Qwen2-VL-2B-Instruct), [Qwen2.5-VL](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct) and [SAM2](https://huggingface.co/facebook/sam2-hiera-large). 
+- This work utilizes models from  [Qwen2-VL](https://huggingface.co/Qwen/Qwen2-VL-2B-Instruct), [Qwen2.5-VL](https://huggingface.co/Qwen/Qwen2.5-VL-3B-Instruct), [SAM2](https://huggingface.co/facebook/sam2-hiera-large) and [YOLO-WORLD](https://github.com/AILab-CVC/YOLO-World). 
 
 
 ## Star History

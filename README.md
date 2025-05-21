@@ -30,6 +30,7 @@ VisionReasoner demonstrates following features:
 - [Model](#model)
 - [Installation](#installation)
 - [Inference](#inference)
+- [Hybrid Reasoning](#hybrid-reasoning)
 - [Evaluation](#evaluation)
 - [Training](#training)
 - [Citation](#citation)
@@ -151,10 +152,10 @@ In VQA, there are no reasoning, and you will get the final answer in command lin
 python vision_reasoner/inference.py --image_path "your_image_path" --query "your question text"
 ```
 
-### Turning on hybrid reasoning mode:
+## Hybrid Reasoning:
 When hybrid reasoning mode is enabled, VisionReasoner intelligently switches between direct detection (using YOLO-World) and reasoning-based approaches based on the complexity of the query. This allows for faster responses on simple queries while maintaining detailed reasoning for complex tasks.
 
-#### Simple Query Example:
+### Simple Query Example:
 For straightforward queries that can be directly answered by object detection:
 
 ```bash
@@ -167,9 +168,9 @@ Output:
 <img width="100%" src="assets/crowd_output_1.png"/>
 </div>
 
-In this case, the model directly uses YOLO for detection without going through the reasoning process, resulting in faster response times.
+In this case, the model directly uses YOLO-World for detection without going through the reasoning process, resulting in faster response times.
 
-#### Complex Query Example:
+### Complex Query Example:
 For queries that require spatial reasoning or complex understanding:
 
 ```bash
@@ -240,7 +241,6 @@ bash evaluation/eval_count.sh Ricky06662/counting_pixmo_validation
 bash evaluation/eval_count.sh Ricky06662/counting_pixmo_test
 bash evaluation/eval_count.sh Ricky06662/counting_countbench
 ```
-
 
 ## Training
 

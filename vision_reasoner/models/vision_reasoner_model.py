@@ -17,6 +17,9 @@ from .base_model import (
 from qwen_vl_utils import process_vision_info
 from .task_router import TaskRouter
 
+STOP_WORDS = {"is", "are", "find", "the", "segment", "all", "in", "image", "how", "many"}
+
+
 class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, CountingModel, QAModel):
     """
     VisionReasoner model implementing all task interfaces
@@ -312,7 +315,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
     
     def detect_objects_yolo(self, image, query):
         """
-        Detect objects in an image based on a query using YOLOE model
+        Detect objects in an image based on a query using YOLO model
         
         Args:
             image: Input image
@@ -321,7 +324,8 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
         Returns:
             dict: Results with bounding boxes and scores
         """
-        # Initialize a YOLOE model
+        # Initialize a YOLO model
+        query = " ".join([word.strip(".\"?!'") for word in query.lower().strip(".\"?!").split() if word not in STOP_WORDS])
         names = [query]
         self.yolo_model.set_classes(names)
 
@@ -364,7 +368,8 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
         """
 
         # trivial condition
-        return len(query.lower().strip(".\"?!").split(" ")) < 5
+        query_words = [word for word in query.lower().strip(".\"?!").split() if word not in STOP_WORDS]
+        return len(query_words) <= 3
     
     # DetectionModel implementation
     def detect_objects(self, image, query):

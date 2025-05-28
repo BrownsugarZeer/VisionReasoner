@@ -2,7 +2,7 @@
 import argparse
 from PIL import Image
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "5"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 from models.vision_reasoner_model import VisionReasonerModel
 from utils import visualize_results_enhanced
 

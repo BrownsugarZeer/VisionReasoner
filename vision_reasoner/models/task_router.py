@@ -13,8 +13,6 @@ class TaskRouter:
         )
         self.tokenizer = AutoTokenizer.from_pretrained(model_name, padding_side="left")
         self.prompt_template = "Given a user instruction, please classify which type of task it is and output the final answer after \"####\".. The types are: 1) Segmentation/detection, 2) Counting, 3) Editing, 4) Caption/QA. The user instruction is: "
-        
-        self.labels = ['seg/det', 'count', 'editing', 'vqa']
 
     def route_task(self, instruction):
         """Route input instruction to corresponding task category

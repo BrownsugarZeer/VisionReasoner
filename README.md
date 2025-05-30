@@ -2,7 +2,7 @@
 
 > Current VLMs are primarily used for visual captioning or visual QA tasks. In this project, we take a step further by demonstrating the potential of a single VLM to solve diverse vision tasks. We hope this work will advance the frontier of VLM research and expand the boundaries of what these models can achieve.  
 
-Paper: [📖 VisionReasoner](https://arxiv.org/pdf/2505.12081) [📖 Seg-Zero](https://arxiv.org/abs/2503.06520)         
+Paper: [📖 VisionReasoner](https://arxiv.org/pdf/2505.12081) [📖 Seg-Zero](https://arxiv.org/pdf/2503.06520)         
 HuggingFace Daily: [🤗 VisionReasoner](https://huggingface.co/papers/2505.12081)  
 Model: [🤗 VisionReasoner-7B](https://huggingface.co/Ricky06662/VisionReasoner-7B) [🤗 TaskRouter-1.5B](https://huggingface.co/Ricky06662/TaskRouter-1.5B)  
 Relative Link: [Seg-Zero![[code]](https://img.shields.io/github/stars/dvlab-research/Seg-Zero)](https://github.com/dvlab-research/Seg-Zero)   
@@ -30,7 +30,8 @@ VisionReasoner demonstrates following features:
 - [Model](#model)
 - [Installation](#installation)
 - [Inference](#inference)
-- [Hybrid Reasoning](#hybrid-reasoning)
+- [Hybrid Mode](#hybrid-mode)
+- [Image Generation](#image-generation)
 - [Evaluation](#evaluation)
 - [Training](#training)
 - [Citation](#citation)
@@ -152,14 +153,14 @@ In VQA, there are no reasoning, and you will get the final answer in command lin
 python vision_reasoner/inference.py --image_path "your_image_path" --query "your question text"
 ```
 
-## Hybrid Reasoning:
+## Hybrid Mode:
 When hybrid reasoning mode is enabled, VisionReasoner intelligently switches between direct detection (using YOLO-World) and reasoning-based approaches based on the complexity of the query. This allows for faster responses on simple queries while maintaining detailed reasoning for complex tasks.
 
 ### Simple Query Example:
 For straightforward queries that can be directly answered by object detection:
 
 ```bash
-python vision_reasoner/inference.py --image "assets/crowd.png" --query "person" --hybrid_mode 
+python vision_reasoner/inference.py --image_path "assets/crowd.png" --query "person" --hybrid_mode 
 ```
 
 Output:
@@ -174,7 +175,7 @@ In this case, the model directly uses YOLO-World for detection without going thr
 For queries that require spatial reasoning or complex understanding:
 
 ```bash
-python vision_reasoner/inference.py --image "assets/crowd.png" --query "the person who is facing to the camera" --hybrid_mode 
+python vision_reasoner/inference.py --image_path "assets/crowd.png" --query "the person who is facing to the camera" --hybrid_mode 
 ```
 
 Output:
@@ -187,6 +188,24 @@ Output:
 
 In this case, the model switches to the reasoning-based approach because the query requires understanding spatial relationships and visual attributes.
 
+
+## Image Generation:
+Our framework can also incorporate generation tasks. We adopt [gpt-image-1](https://platform.openai.com/docs/guides/image-generation?image-generation-model=gpt-image-1) for generation in current version.    
+
+> [!NOTE]
+> Bugs might arise from API version mismatches. Please debug and customize based on your API key and version.
+
+### Text-to-image generation 
+For text to image generation, you can only input a prompt
+```bash
+python vision_reasoner/inference.py --image_prompt "Draw a image of a cute dog." --generation_model_name [your openAI api key] --generation_mode 
+```
+
+### Image reference generation 
+For image reference generation, you should input a prompt and reference image
+```bash
+python vision_reasoner/inference.py  --refer_image_path "assets/dog.png" --image_prompt "Generate a cute dog in a forest" --generation_model_name [your openAI api key] --generation_mode 
+```
 
 ## Evaluation
 
@@ -210,8 +229,7 @@ Additionally, you can customize model paths with the following parameters:
 # Using local model paths (instead of downloading from HuggingFace)
 bash evaluation/eval_segmentation.sh [dataset_path] \
   --model_path /path/to/local/VisionReasoner-7B \
-  --task_router_model_path /path/to/local/TaskRouter-1.5B \
-  --segmentation_model_path /path/to/local/sam2-model
+  --task_router_model_path /path/to/local/TaskRouter-1.5B
 ```
 
 ### Available Evaluation Scripts
@@ -257,10 +275,10 @@ We recommend you to [Seg-Zero](https://github.com/dvlab-research/Seg-Zero) for t
   year         = {2025}
 }
 
-@misc{liu2025visionreasoner,
+@article{liu2025visionreasoner,
   title        = {VisionReasoner: Unified Visual Perception and Reasoning via Reinforcement Learning},
   author       = {Liu, Yuqi and Qu, Tianyuan and Zhong, Zhisheng and Peng, Bohao and Liu, Shu and Yu, Bei and Jia, Jiaya},
-  howpublished = {arXiv preprint arXiv:2505.12081},
+  journal      = {arXiv preprint arXiv:2505.12081},
   year         = {2025}
 }
 ```

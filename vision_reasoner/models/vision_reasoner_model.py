@@ -2,10 +2,14 @@ import torch
 import numpy as np
 import re
 import json
+import os
 from transformers import Qwen2_5_VLForConditionalGeneration, AutoProcessor
 from sam2.sam2_image_predictor import SAM2ImagePredictor
 from PIL import Image as PILImage
 from ultralytics import YOLOWorld
+from openai import OpenAI
+from io import BytesIO
+import base64
 
 from .base_model import (
     BaseVisionModel,
@@ -17,7 +21,9 @@ from .base_model import (
 from qwen_vl_utils import process_vision_info
 from .task_router import TaskRouter
 
-STOP_WORDS = {"is", "are", "find", "the", "segment", "all", "in", "image", "how", "many"}
+STOP_WORDS = {"is", "are", "find", "the", "segment", "all", "in", "image", 
+              "how", "many", "there", "locate", "please"}
+MAX_QUERY_WORDS = 2
 
 
 class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, CountingModel, QAModel):
@@ -28,7 +34,8 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
                  reasoning_model_path="Ricky06662/VisionReasoner-7B", 
                  segmentation_model_path="facebook/sam2-hiera-large",
                  task_router_model_path="Ricky06662/TaskRouter-1.5B",
-                 yolo_model_path=None):
+                 yolo_model_path=None,
+                 generation_model_path=None):
         """
         Initialize the VisionReasoner model with reasoning and segmentation components
         
@@ -72,6 +79,10 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
         if yolo_model_path:
             self.use_hybrid_mode = True
             self.yolo_model = YOLOWorld(yolo_model_path)
+        
+        # Initialize generation model
+        if generation_model_path:
+            self.generation_model = OpenAI(api_key=os.environ.get("OPENAI_API_KEY", generation_model_path))
 
     
     def extract_bbox_points_think(self, output_text, x_factor, y_factor):
@@ -288,7 +299,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
             result = self.detect_objects(image, instruction)
         elif task_type == "counting":
             result = self.count_objects(image, instruction)
-        else:  # Default to QA
+        else:  # Default to VQA
             result = self.answer_question(image, instruction)
         
         if return_task_type:
@@ -369,7 +380,7 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
 
         # trivial condition
         query_words = [word for word in query.lower().strip(".\"?!").split() if word not in STOP_WORDS]
-        return len(query_words) <= 3
+        return len(query_words) <= MAX_QUERY_WORDS
     
     # DetectionModel implementation
     def detect_objects(self, image, query):
@@ -738,3 +749,40 @@ class VisionReasonerModel(BaseVisionModel, DetectionModel, SegmentationModel, Co
                 "thinking": "",
                 "full_response": ""
             } for _ in range(len(images))]
+            
+    def generate_image(self, refer_image_path, image_prompt):
+        """
+        Generate an image based on a query
+        
+        Args:
+            refer_image_path: Path to the reference image
+            image_prompt: Text prompt describing what to generate
+            
+        Returns:
+            dict: Results with generated image and thinking (if available)
+        """
+        if self.generation_model is None or image_prompt is None:
+            raise ValueError("Do not have generation model or query")
+        
+        try:
+            if refer_image_path == "":
+                # Generate the image
+                output = self.generation_model.images.generate(
+                    model="gpt-image-1",
+                    prompt=image_prompt,
+                )
+                image_base64 = output.data[0].b64_json
+                
+            else:
+                output = self.generation_model.images.edit(
+                    model="gpt-image-1",
+                    image=[open(refer_image_path, "rb")], 
+                    prompt=image_prompt,
+                )
+                image_base64 = output.data[0].b64_json
+            
+            image = PILImage.open(BytesIO(base64.b64decode(image_base64)))
+            return image
+        except Exception as e:
+            print(f"Error in image generation: {e}")
+            return None
